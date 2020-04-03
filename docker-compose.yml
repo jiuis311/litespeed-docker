@@ -1,0 +1,42 @@
+version: '3'
+services:
+  server:
+    build: 
+      context: ./container/litespeed-php
+      dockerfile: Dockerfile
+    ports:
+      - 7080:7080
+      - 8000:8088
+    volumes: 
+      - .:/var/lib/litespeed/Example
+    environment:
+      APP_NAME: "web-xa-bong"
+      APP_ENV: local
+      APP_KEY: base64:xwuo1f8alIO5BHECDaSYJkUCNZ+prHHniM/74yiInt8=
+      APP_URL: https://admin.prettypaint.com.vn
+      DB_CONNECTION: mysql
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_DATABASE: xabong
+      DB_USERNAME: root
+      DB_PASSWORD: yx7n8gehy25rzeqjbyxxzs2
+      REDIS_HOST: redis
+    networks:
+      - app-network
+  redis:
+    image: redis:4.0.5-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    hostname: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+    volumes:
+      - redis-data:/data
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+
